@@ -11,6 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ route('admin.categories') }}">Categories</a></li>
             <li class="breadcrumb-item active" aria-current="page">Edit</li>
         </ol>
-    </nav><hr/>
+    </nav>
+    <hr />
     @include('admin.category.create')
 </x-admin-app-layout>

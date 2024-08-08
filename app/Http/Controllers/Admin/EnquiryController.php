@@ -8,13 +8,46 @@ use Illuminate\Http\Request;
 
 class EnquiryController extends Controller
 {
+    public $columns = ["id"=>"ID", "name"=>"Name", "email"=>"Email", "subject"=>"Subject","message"=>"Message", "created_at"=>"Created At"];
+
+    public $fields = [
+        [
+            "id"=>"clientName",
+            "name"=>"name",
+            "type"=>"text",
+            "label"=>"Client's Name",
+            "placeholder"=>"Client's Name"
+        ],
+        [
+            "id"=>"clientEmail",
+            "name"=>"email",
+            "type"=>"email",
+            "label"=>"Client's Email",
+            "placeholder"=>"Client's Email"
+        ],
+        [
+            "id"=>"clientSubject",
+            "name"=>"subject",
+            "type"=>"textarea",
+            "label"=>"Client's Subject",
+            "placeholder"=>"Client's Subject"
+        ],
+        [
+            "id"=>"clientMessage",
+            "name"=>"message",
+            "type"=>"textarea",
+            "label"=>"Client's Message",
+            "placeholder"=>"Client's Message"
+        ],
+    ];
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $enquiries = Enquiry::all();
-        return view('admin.enquiries.all',['enquiries'=>$enquiries,'edit'=>false]);
+        $records = Enquiry::all();
+        return view('admin.enquiries.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -66,7 +99,7 @@ class EnquiryController extends Controller
      */
     public function edit(Enquiry $enquiry)
     {
-        //
+        return view('admin.client.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$enquiry, 'edit'=>true]);
     }
 
     /**
@@ -82,6 +115,7 @@ class EnquiryController extends Controller
      */
     public function destroy(Enquiry $enquiry)
     {
-        //
+        $enquiry->delete();
+        return redirect()->route('admin.enquiries')->with('success', 'Enquiry deleted successfully.');
     }
 }

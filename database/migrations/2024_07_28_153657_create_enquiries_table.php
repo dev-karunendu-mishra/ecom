@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('enquiries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->nullable();
+            $table->string('mobile')->nullable();
             $table->string('subject');
             $table->string('message');
             $table->timestamps();

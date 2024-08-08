@@ -1,10 +1,18 @@
 <x-admin-app-layout>
     @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>{{ session('success') }}</strong>
+        <strong>Success {{ session('success') }}</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
+
+    <!-- <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Categories</li>
+        </ol>
+    </nav>
+    <hr /> -->
 
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -16,73 +24,15 @@
                 aria-selected="false">Add New Product</button>
         </div>
     </nav>
-    <div class="tab-content border border-top-0 rounded-bottom-1" id="nav-tabContent">
+    <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade p-2 {{!$errors->any() ? 'active show' : ''}}" id="nav-home" role="tabpanel"
             aria-labelledby="nav-home-tab" tabindex="0">
-            <table id="example" class="table table-striped" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Brand</th>
-                        <!-- <th>URL</th> -->
-                        <th>Created At</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($products as $product)
-                    <tr>
-                        <td>{{$product->id}}</td>
-                        <td>{{$product->name}}</td>
-                        <td>{{$product->category->name}}</td>
-                        <td>{{$product->brand->name}}</td>
-                        <td>{{$product->created_at}}</td>
-                        <td>
-
-
-                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                    <a href="{{url('/admin/products/'.$product->id.'/edit')}}"
-                                        class="btn btn-warning btn-sm"><span class="ti ti-edit fs-4"></span></a>
-                                    <button class="btn btn-danger btn-sm" type="submit"><span
-                                            class="ti ti-trash fs-4"></span></button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Brand</th>
-                        <th>Created At</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
-            </table>
+            <x-all-records :records="$records" :columns="$columns" enableActionColumn="{{true}}" model="products" />
         </div>
 
         <div class="tab-pane fade p-2 {{$errors->any() ? ' active show' : '' }}" id="nav-profile" role="tabpanel"
             aria-labelledby="nav-profile-tab" tabindex="0">
             @include('admin.products.create')
         </div>
-
     </div>
-
-
-
-
-
-
-
-    <script src="/template-resources/admin/assets/js/dt-table.js"></script>
 </x-admin-app-layout>

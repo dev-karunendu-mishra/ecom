@@ -54,6 +54,24 @@
             </li>
 
             <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.services') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Services</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.industries') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Industries</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
               <a class="sidebar-link" href="{{ route('admin.brands') }}" aria-expanded="false">
                 <span>
                   <i class="ti ti-article"></i>
@@ -89,6 +107,42 @@
               </a>
             </li>
 
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.clients') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Clients</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.testimonials') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Testimonials</span>
+              </a>
+            </li>
+
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.subscribers') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Subscribers</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.blog-categories') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Blog Categories</span>
+              </a>
+            </li>
             <li class="sidebar-item">
               <a class="sidebar-link" href="{{ route('admin.blogs') }}" aria-expanded="false">
                 <span>

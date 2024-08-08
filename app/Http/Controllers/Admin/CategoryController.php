@@ -9,13 +9,53 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    public $columns = ["id"=>"ID", "name"=>"Category", "parent"=>"Parent Category", "url"=>"Category URL", "images"=>"Image", "created_at"=>"Created At"];
+
+    public $fields = [
+        "name"=>[
+            "id"=>"categoryName",
+            "name"=>"name",
+            "type"=>"text",
+            "label"=>"Category's Name",
+            "placeholder"=>"Category's Name"
+        ],
+        "description"=>[
+            "id"=>"categoryDescription",
+            "name"=>"description",
+            "type"=>"textarea",
+            "label"=>"Category's Description",
+            "placeholder"=>"Category's Description"
+        ],
+        "parent_id"=>[
+            "id"=>"parentCategory",
+            "name"=>"parent_id",
+            "type"=>"select",
+            "label"=>"Parent Category",
+            "placeholder"=>"Parent Category"
+        ],
+        "url"=>[
+            "id"=>"categoryURL",
+            "name"=>"url",
+            "type"=>"text",
+            "label"=>"Category's URL",
+            "placeholder"=>"Category's URL"
+        ],
+        "image"=>[
+            "id"=>"categoryImage",
+            "name"=>"image",
+            "type"=>"file",
+            "label"=>"Category's Image",
+            "placeholder"=>"Category's Image"
+        ]
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::with(['images'])->withCount('products')->get();
-        return view('admin.category.all-categories',['categories'=>$categories,'edit'=>false]);
+        $records = Category::with(['parent','children','images'])->withCount('products')->get();
+        $this->fields['parent_id']['options'] = $records;
+        return view('admin.category.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
         
     }
 
@@ -69,8 +109,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-         $categories = Category::with(['images'])->withCount('products')->get();
-         return view('admin.category.edit',['categories'=>$categories, 'category'=>$category, 'edit'=>true]);
+        $categories = Category::with(['images'])->withCount('products')->get();
+        $this->fields['parent_id']['options'] = $categories;
+        return view('admin.category.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$category, 'edit'=>true, 'categories'=>$categories]);
     }
 
     /**
@@ -106,7 +147,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        // Redirect to the items index page with a success message
         return redirect()->route('admin.categories')->with('success', 'Category deleted successfully.');
     }
 }

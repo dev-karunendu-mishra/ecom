@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('sub_title');
             $table->string('shop_link')->nullable();
             $table->string('image');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

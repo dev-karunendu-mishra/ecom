@@ -52,7 +52,7 @@
                             @foreach($pages as $page)
                              <a href="/{{$page->url}}" class="nav-item nav-link">{{$page->title}}</a>
                             @endforeach
-                            <a href="/shop" class="nav-item nav-link">Shop</a>
+                            <!-- <a href="/shop" class="nav-item nav-link">Shop</a>
                             <a href="/product-details" class="nav-item nav-link">Shop Detail</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
@@ -60,7 +60,7 @@
                                     <a href="/cart" class="dropdown-item">Shopping Cart</a>
                                     <a href="/checkout" class="dropdown-item">Checkout</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <a href="/contact" class="nav-item nav-link">Contact</a>
                         </div>
                         @if (Route::has('login'))

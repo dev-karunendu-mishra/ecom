@@ -14,7 +14,7 @@
   <!-- Include stylesheet -->
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/4.0.0/css/jasny-bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/4.0.0/css/jasny-bootstrap.min.css"> -->
   <script src="/template-resources/admin/assets/libs/jquery/dist/jquery.min.js"></script>
 
 
@@ -52,7 +52,7 @@
   <script src="/template-resources/admin/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="/template-resources/admin/assets/libs/simplebar/dist/simplebar.js"></script>
   <!-- Latest compiled and minified JavaScript -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/4.0.0/js/jasny-bootstrap.min.js"></script>
+  <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/4.0.0/js/jasny-bootstrap.min.js"></script> -->
   <!-- Include the Quill library -->
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
@@ -69,7 +69,7 @@
     referrerpolicy="origin"></script>
   <script>
     tinymce.init({
-      selector: 'textarea',
+      selector: 'textarea.editor-area',
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
       toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
       tinycomments_mode: 'embedded',
@@ -135,6 +135,13 @@
       }
     });
   </script> -->
+
+  <script>
+      const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+      const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+      const popover = new bootstrap.Popover('.popover-dismiss', {trigger: 'focus'});
+  
+  </script>
 </body>
 
 </html>

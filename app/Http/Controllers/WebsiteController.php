@@ -9,13 +9,15 @@ use App\Models\Slider;
 use App\Models\Product;
 use App\Models\Page;
 use App\Models\Enquiry;
+use App\Models\Client;
 
 class WebsiteController extends Controller
 {
     public function index() {
         $sliders = Slider::all();
         $products = Product::all();
-        return view('template-one.home',['sliders'=>$sliders, 'products'=>$products]);
+        $clients = Client::all();
+        return view('template-one.home', compact('sliders', 'products', 'clients'));
     }
 
     public function getPage(Request $request, $page)

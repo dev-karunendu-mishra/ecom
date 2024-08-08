@@ -19,6 +19,12 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CatalogController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SubscriberController;
+use App\Http\Controllers\Admin\BlogCategoryController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\IndustryController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest:admin')->prefix('admin')->name('admin.')->group(function () {
@@ -92,8 +98,46 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
             'destroy' => 'settings.destroy'
         ]);
 
-        Route::get('/sliders', [SliderController::class, 'index'])->name('sliders');
-        Route::post('/sliders', [SliderController::class, 'store'])->name('sliders.store');
+         Route::resource('clients', ClientController::class)->names([
+            'index' => 'clients',
+            'create' => 'clients.create',
+            'store' => 'clients.store',
+            'show' => 'clients.show',
+            'edit' => 'clients.edit',
+            'update' => 'clients.update',
+            'destroy' => 'clients.destroy'
+        ]);
+
+        Route::resource('testimonials', TestimonialController::class)->names([
+            'index' => 'testimonials',
+            'create' => 'testimonials.create',
+            'store' => 'testimonials.store',
+            'show' => 'testimonials.show',
+            'edit' => 'testimonials.edit',
+            'update' => 'testimonials.update',
+            'destroy' => 'testimonials.destroy'
+        ]);
+
+
+        Route::resource('subscribers', SubscriberController::class)->names([
+            'index' => 'subscribers',
+            'create' => 'subscribers.create',
+            'store' => 'subscribers.store',
+            'show' => 'subscribers.show',
+            'edit' => 'subscribers.edit',
+            'update' => 'subscribers.update',
+            'destroy' => 'subscribers.destroy'
+        ]);
+
+        Route::resource('sliders', SliderController::class)->names([
+            'index' => 'sliders',
+            'create' => 'sliders.create',
+            'store' => 'sliders.store',
+            'show' => 'sliders.show',
+            'edit' => 'sliders.edit',
+            'update' => 'sliders.update',
+            'destroy' => 'sliders.destroy'
+        ]);
 
         // Route::get('/pages', [PageController::class, 'index'])->name('pages');
         // Route::get('/pages/{id}/edit', [PageController::class, 'edit'])->name('pages.edit');
@@ -119,6 +163,15 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
             'destroy' => 'enquiries.destroy'
         ]);
         
+        Route::resource('blog-categories', BlogCategoryController::class)->names([
+            'index' => 'blog-categories',
+            'create' => 'blog-categories.create',
+            'store' => 'blog-categories.store',
+            'show' => 'blog-categories.show',
+            'edit' => 'blog-categories.edit',
+            'update' => 'blog-categories.update',
+            'destroy' => 'blog-categories.destroy'
+        ]);
 
         Route::resource('blogs', BlogController::class)->names([
             'index' => 'blogs',
@@ -142,8 +195,28 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         ]);
         // Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
         // Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+
+         Route::resource('services', ServiceController::class)->names([
+            'index' => 'services',
+            'create' => 'services.create',
+            'store' => 'services.store',
+            'show' => 'services.show',
+            'edit' => 'services.edit',
+            'update' => 'services.update',
+            'destroy' => 'services.destroy'
+        ]);
+        Route::resource('industries', IndustryController::class)->names([
+            'index' => 'industries',
+            'create' => 'industries.create',
+            'store' => 'industries.store',
+            'show' => 'industries.show',
+            'edit' => 'industries.edit',
+            'update' => 'industries.update',
+            'destroy' => 'industries.destroy'
+        ]);
     });
     
+   
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -8,13 +8,45 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    public $columns = ["id"=>"ID", "name"=>"Brand's Name", "url"=>"Brand's URL", "images"=>"Picture", "created_at"=>"Created At"];
+
+    public $fields = [
+        [
+            "id"=>"brandName",
+            "name"=>"name",
+            "type"=>"text",
+            "label"=>"Brand's Name",
+            "placeholder"=>"Brand's Name"
+        ],
+        [
+            "id"=>"brandDescription",
+            "name"=>"description",
+            "type"=>"textarea",
+            "label"=>"Brand's Description",
+            "placeholder"=>"Brand's Description"
+        ],
+        [
+            "id"=>"brandURL",
+            "name"=>"url",
+            "type"=>"text",
+            "label"=>"Brand's URL",
+            "placeholder"=>"Brand's URL"
+        ],
+        [
+            "id"=>"brandImage",
+            "name"=>"image",
+            "type"=>"file",
+            "label"=>"Brand's Image",
+            "placeholder"=>"Brand's Image"
+        ]
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $brands = Brand::with(['images'])->get();
-        return view('admin.brands.all-brands',['brands'=>$brands, 'edit'=>false]);
+        $records = Brand::with(['images'])->get();
+        return view('admin.brands.all-brands',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -66,7 +98,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        return view('admin.brands.edit',['brand'=>$brand, 'edit'=>true]);
+        return view('admin.brands.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$brand, 'edit'=>true]);
     }
 
     /**

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('description');
             $table->string('domain');
             $table->string('address')->nullable();
+            $table->string('location')->nullable();
+            $table->string('branches')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();
             $table->string('facebook')->nullable();

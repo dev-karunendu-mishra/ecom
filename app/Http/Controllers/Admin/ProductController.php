@@ -11,16 +11,63 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public $columns = ["id"=>"ID", "name"=>"Name", "images"=>"Image","category_id"=>"Category","brand_id"=>"Brand", "price"=>"Price", "created_at"=>"Created At"];
+
+    public $fields = [
+        [
+            "id"=>"name",
+            "name"=>"name",
+            "type"=>"text",
+            "label"=>"Product's Name",
+            "placeholder"=>"Product's Name"
+        ],
+        [
+            "id"=>"description",
+            "name"=>"description",
+            "type"=>"textarea",
+            "label"=>"Product's Description",
+            "placeholder"=>"Product's Description"
+        ],
+        "category_id"=>[
+            "id"=>"category",
+            "name"=>"category_id",
+            "type"=>"select",
+            "label"=>"Product's Category",
+            "placeholder"=>"Product's Category"
+        ],
+        "brand_id"=>[
+            "id"=>"brand",
+            "name"=>"brand_id",
+            "type"=>"select",
+            "label"=>"Product's Brand",
+            "placeholder"=>"Products's Brand"
+        ],
+        [
+            "id"=>"price",
+            "name"=>"price",
+            "type"=>"text",
+            "label"=>"Product's Price",
+            "placeholder"=>"Product's Price"
+        ],
+        [
+            "id"=>"productImage",
+            "name"=>"image",
+            "type"=>"file",
+            "label"=>"Product Image",
+            "placeholder"=>"Product Image"
+        ]
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::with(['category', 'brand', 'images'])->get();
+        $records = Product::with(['category', 'brand', 'images'])->get();
         $categories = Category::all();
         $brands = Brand::all();
-        // $tags = Tag::all();
-        return view('admin.products.all',['products'=>$products,'categories'=>$categories, 'brands'=>$brands, 'edit'=>false]);
+        $this->fields['category_id']['options'] = $categories;
+        $this->fields['brand_id']['options'] = $brands;
+        return view('admin.products.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -46,7 +93,7 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $product = Product::create($request->only(['category_id', 'brand_id', 'name', 'description', 'price']));
+        $product = Product::create($request->all());
         // $product->tags()->sync($request->tags);
 
         // if ($request->hasFile('images')) {
@@ -87,7 +134,9 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $brands = Brand::all();
-        return view('admin.products.edit',['product'=>$product, 'categories'=>$categories, 'brands'=>$brands,'edit'=>true]);
+        $this->fields['category_id']['options'] = $categories;
+        $this->fields['brand_id']['options'] = $brands;
+        return view('admin.category.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$product, 'edit'=>true, 'categories'=>$categories]);
     }
 
     /**
@@ -105,7 +154,7 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $product->update($request->only(['category_id', 'brand_id', 'name', 'description', 'price']));
+        $product->update($request->all());
         // $product->tags()->sync($request->tags);
 
         // if ($request->hasFile('images')) {

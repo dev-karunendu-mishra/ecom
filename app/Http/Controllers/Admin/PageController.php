@@ -8,13 +8,38 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public $columns = ["id"=>"ID", "title"=>"Page Title", "description"=>"Description", "url"=>"Page URL", "created_at"=>"Created At"];
+
+    public $fields = [
+        [
+            "id"=>"pageTitle",
+            "name"=>"title",
+            "type"=>"text",
+            "label"=>"Page Title",
+            "placeholder"=>"Page Title"
+        ],
+        [
+            "id"=>"pageDescription",
+            "name"=>"description",
+            "type"=>"textarea",
+            "label"=>"Page Description",
+            "placeholder"=>"Page Description"
+        ],
+        [
+            "id"=>"pageURL",
+            "name"=>"url",
+            "type"=>"text",
+            "label"=>"Page URL",
+            "placeholder"=>"Page URL"
+        ]
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-         $pages = Page::all();
-        return view('admin.pages.all-pages',['pages'=>$pages, 'edit'=>false]);
+        $records = Page::all();
+        return view('admin.pages.all-pages',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -45,7 +70,7 @@ class PageController extends Controller
             //     $filePath = $file->storeAs('uploads', $fileName); // 'uploads' is the storage folder
             // }
 
-        $page = Page::create($request->all());
+        Page::create($request->all());
         return redirect()->route('admin.pages')->with('success', 'Page added successfully!');
     }
 
@@ -62,7 +87,7 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        return view('admin.pages.edit',['page'=>$page, 'edit'=>true]);
+        return view('admin.pages.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$page, 'edit'=>true]);
     }
 
     /**

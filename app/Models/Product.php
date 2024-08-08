@@ -20,6 +20,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');

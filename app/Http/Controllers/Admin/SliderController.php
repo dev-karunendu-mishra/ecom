@@ -8,13 +8,45 @@ use Illuminate\Http\Request;
 
 class SliderController extends Controller
 {
+    public $columns = ["id"=>"ID", "title"=>"Title", "sub_title"=>"SubTitle", "image"=>"Slider Image", "created_at"=>"Created At"];
+
+    public $fields = [
+        [
+            "id"=>"title",
+            "name"=>"title",
+            "type"=>"text",
+            "label"=>"Slider's Title",
+            "placeholder"=>"Slider's Title"
+        ],
+        [
+            "id"=>"subTitle",
+            "name"=>"sub_title",
+            "type"=>"text",
+            "label"=>"Slider's SubTitle",
+            "placeholder"=>"Slider's SubTitle"
+        ],
+        [
+            "id"=>"shopLink",
+            "name"=>"shop_link",
+            "type"=>"text",
+            "label"=>"Shop Link",
+            "placeholder"=>"Shop Link"
+        ],
+        [
+            "id"=>"sliderImage",
+            "name"=>"image",
+            "type"=>"file",
+            "label"=>"Slider Image",
+            "placeholder"=>"Slider Image"
+        ]
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $sliders = Slider::all();
-        return view('admin.sliders.all-sliders',['sliders'=>$sliders]);
+        $records = Slider::all();
+        return view('admin.sliders.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -30,7 +62,6 @@ class SliderController extends Controller
      */
     public function store(Request $request)
     {
-
              $validatedData = $request->validate([
              'title'=>'required',
                 'sub_title'=>'required',
@@ -63,7 +94,7 @@ class SliderController extends Controller
      */
     public function edit(Slider $slider)
     {
-        //
+        return view('admin.sliders.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$slider, 'edit'=>true]);
     }
 
     /**
@@ -79,6 +110,7 @@ class SliderController extends Controller
      */
     public function destroy(Slider $slider)
     {
-        //
+        $slider->delete();
+        return redirect()->route('admin.sliders')->with('success', 'Slider deleted successfully.');
     }
 }

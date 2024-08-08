@@ -27,6 +27,6 @@
 
 
     <!-- Vendor Start -->
-    @include('sub-views.template-one.vendors')
+    <x-vendors :vendors='$clients'/>
     <!-- Vendor End -->
 @endsection
