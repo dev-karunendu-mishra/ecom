@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    public $columns = ["id"=>"ID", "name"=>"Brand's Name", "url"=>"Brand's URL", "images"=>"Picture", "created_at"=>"Created At"];
 
-    public $fields = [
+    private $indexView = 'admin.brands.all';
+    private $storeRoute = 'admin.brands';
+    private $editView = 'admin.brands.edit';
+    private $deleteRoute = 'admin.brands';
+    private $deleteMessage = 'Brand deleted successfully.';
+    private $createMessage = 'Brand created successfully.';
+    private $updateMessage = 'Brand updated successfully.';
+
+    private $columns = ["id"=>"ID", "name"=>"Brand's Name", "url"=>"Brand's URL", "images"=>"Picture", "created_at"=>"Created At"];
+
+    private $fields = [
         [
             "id"=>"brandName",
             "name"=>"name",
@@ -46,7 +55,7 @@ class BrandController extends Controller
     public function index()
     {
         $records = Brand::with(['images'])->get();
-        return view('admin.brands.all-brands',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -62,7 +71,7 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-         $validatedData = $request->validate([
+        $request->validate([
             'name'=>'required',
             'description'=>'required',
             'url'=>'required',
@@ -82,7 +91,7 @@ class BrandController extends Controller
         if($filePath) {
             $brand->images()->create(['path'=>$filePath]);
         }
-        return redirect()->route('admin.brands')->with('success', 'Brand added successfully!');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -98,7 +107,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        return view('admin.brands.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$brand, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$brand, 'edit'=>true]);
     }
 
     /**
@@ -106,11 +115,11 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name'=>'required',
             'description'=>'required',
             'url'=>'required',
-            // 'image'=>'required|mimes:png,jpg,jpeg,gif'
+            'image'=>'nullable|mimes:png,jpg,jpeg,gif'
         ]);
             
         // Handle file upload
@@ -125,9 +134,8 @@ class BrandController extends Controller
         if($filePath){
             $updatedInfo['image'] = $filePath; 
         }
-        //$page = Page::create(['title'=>$request->title, 'description'=>$request->description, 'url'=>$request->url]);
         $brand->update($updatedInfo);
-        return redirect()->route('admin.brands')->with('success', 'Brand updated successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -136,6 +144,6 @@ class BrandController extends Controller
     public function destroy(Brand $brand)
     {
         $brand->delete();
-        return redirect()->route('admin.brands')->with('success', 'Brand deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

@@ -11,9 +11,18 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public $columns = ["id"=>"ID", "name"=>"Name", "images"=>"Image","category_id"=>"Category","brand_id"=>"Brand", "price"=>"Price", "created_at"=>"Created At"];
 
-    public $fields = [
+    private $indexView = 'admin.products.all';
+    private $storeRoute = 'admin.products';
+    private $editView = 'admin.products.edit';
+    private $deleteRoute = 'admin.products';
+    private $deleteMessage = 'Product deleted successfully.';
+    private $createMessage = 'Product created successfully.';
+    private $updateMessage = 'Product updated successfully.';
+
+    private $columns = ["id"=>"ID", "name"=>"Name", "images"=>"Image","category_id"=>"Category","brand_id"=>"Brand", "price"=>"Price", "created_at"=>"Created At"];
+
+    private $fields = [
         [
             "id"=>"name",
             "name"=>"name",
@@ -67,7 +76,7 @@ class ProductController extends Controller
         $brands = Brand::all();
         $this->fields['category_id']['options'] = $categories;
         $this->fields['brand_id']['options'] = $brands;
-        return view('admin.products.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -116,7 +125,7 @@ class ProductController extends Controller
             $product->images()->create(['path'=>$filePath]);
         }
 
-        return redirect()->route('admin.products')->with('success', 'Product created successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -136,7 +145,7 @@ class ProductController extends Controller
         $brands = Brand::all();
         $this->fields['category_id']['options'] = $categories;
         $this->fields['brand_id']['options'] = $brands;
-        return view('admin.category.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$product, 'edit'=>true, 'categories'=>$categories]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$product, 'edit'=>true, 'categories'=>$categories]);
     }
 
     /**
@@ -155,14 +164,6 @@ class ProductController extends Controller
         ]);
 
         $product->update($request->all());
-        // $product->tags()->sync($request->tags);
-
-        // if ($request->hasFile('images')) {
-        //     foreach ($request->file('images') as $image) {
-        //         $path = $image->store('images', 'public');
-        //         $product->images()->create(['path' => $path]);
-        //     }
-        // }
 
         $filePath=null;
         if ($request->hasFile('image')) {
@@ -173,7 +174,7 @@ class ProductController extends Controller
         if($filePath) {
             $product->images()->create(['path'=>$filePath]);
         }
-        return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -182,7 +183,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        // Redirect to the items index page with a success message
-        return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

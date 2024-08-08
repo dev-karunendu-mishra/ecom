@@ -79,7 +79,7 @@ class IndustryController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -126,7 +126,28 @@ class IndustryController extends Controller
      */
     public function update(Request $request, Industry $industry)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'url'=>'required'
+        ]);
+
+        $industry->update($request->all());
+
+        // Handle file upload
+        $filePath=null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/industries', $fileName); // 'uploads' is the storage folder
+        }
+
+        if($filePath) {
+            $industry->images()->create(['path'=>$filePath]);
+        }
+        // Redirect back with a success message
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**

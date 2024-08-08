@@ -31,7 +31,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('categories');
-        $table->dropForeign(['parent_id']);
-        $table->dropColumn('parent_id');   
     }
 };

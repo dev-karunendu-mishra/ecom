@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    private $indexView = 'admin.client.all';
+    private $storeRoute = 'admin.clients';
+    private $editView = 'admin.client.edit';
+    private $deleteRoute = 'admin.clients';
+    private $deleteMessage = 'Client deleted successfully.';
+    private $createMessage = 'Client created successfully.';
+    private $updateMessage = 'Client updated successfully.';
    
     public $columns = ["id"=>"ID", "name"=>"Name", "images"=>"Image", "created_at"=>"Created At"];
 
@@ -41,7 +48,7 @@ class ClientController extends Controller
     public function index()
     {
         $clients = Client::all();
-        return view('admin.client.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'clients'=>$clients,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'clients'=>$clients,'model'=>null]);
     }
 
     /**
@@ -57,7 +64,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-         $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -75,7 +82,7 @@ class ClientController extends Controller
             $client->images()->create(['path'=>$filePath]);
         }
          // Redirect back with a success message
-        return redirect()->route('admin.clients')->with('success', 'Client '.$client->name.' created successfully!');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -91,7 +98,7 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        return view('admin.client.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$client, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$client, 'edit'=>true]);
     }
 
     /**
@@ -99,7 +106,27 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        //
+         $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $client->update($request->all());
+        
+        // Handle file upload
+        $filePath=null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/clients', $fileName); // 'uploads' is the storage folder
+        }
+       
+        if($filePath) {
+            $client->images()->create(['path'=>$filePath]);
+        }
+         // Redirect back with a success message
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -108,6 +135,6 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $client->delete();
-        return redirect()->route('admin.clients')->with('success', 'Client deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

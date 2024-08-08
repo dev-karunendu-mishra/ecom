@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class EnquiryController extends Controller
 {
+    private $indexView = 'admin.enquiries.all';
+    private $storeRoute = 'admin.enquiries';
+    private $editView = 'admin.enquiries.edit';
+    private $deleteRoute = 'admin.enquiries';
+    private $deleteMessage = 'Enquiry deleted successfully.';
+    private $createMessage = 'Enquiry created successfully.';
+    private $updateMessage = 'Enquiry updated successfully.';
+    
     public $columns = ["id"=>"ID", "name"=>"Name", "email"=>"Email", "subject"=>"Subject","message"=>"Message", "created_at"=>"Created At"];
 
     public $fields = [
@@ -47,7 +55,7 @@ class EnquiryController extends Controller
     public function index()
     {
         $records = Enquiry::all();
-        return view('admin.enquiries.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -63,27 +71,15 @@ class EnquiryController extends Controller
      */
     public function store(Request $request)
     {
-         $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
             'subject' => 'required',
             'message'=>'required' // max 2MB
         ]);
 
-         // Handle file upload
-        // $filePath=null;
-        // if ($request->hasFile('image')) {
-        //     $file = $request->file('image');
-        //     $fileName = time() . '_' . $file->getClientOriginalName();
-        //     $filePath = $file->storeAs('uploads/categories', $fileName); // 'uploads' is the storage folder
-        // }
-        //$category = Category::create(['name'=>$request->name, 'parent_id'=>$request->parent_category_id, 'description'=>$request->description]);
-        $enquiry = Enquiry::create($request->all());
-        // if($filePath) {
-        //     $category->images()->create(['path'=>$filePath]);
-        // }
-         // Redirect back with a success message
-        return redirect()->route('admin.enquiries')->with('success', 'Enquiry created successfully!');
+        Enquiry::create($request->all());
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -99,7 +95,7 @@ class EnquiryController extends Controller
      */
     public function edit(Enquiry $enquiry)
     {
-        return view('admin.client.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$enquiry, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$enquiry, 'edit'=>true]);
     }
 
     /**
@@ -116,6 +112,6 @@ class EnquiryController extends Controller
     public function destroy(Enquiry $enquiry)
     {
         $enquiry->delete();
-        return redirect()->route('admin.enquiries')->with('success', 'Enquiry deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+
+    private $indexView = 'admin.category.all';
+    private $storeRoute = 'admin.categories';
+    private $editView = 'admin.category.edit';
+    private $deleteRoute = 'admin.categories';
+    private $deleteMessage = 'Category deleted successfully.';
+    private $createMessage = 'Category created successfully.';
+    private $updateMessage = 'Category updated successfully.';
+
     public $columns = ["id"=>"ID", "name"=>"Category", "parent"=>"Parent Category", "url"=>"Category URL", "images"=>"Image", "created_at"=>"Created At"];
 
     public $fields = [
@@ -55,7 +64,7 @@ class CategoryController extends Controller
     {
         $records = Category::with(['parent','children','images'])->withCount('products')->get();
         $this->fields['parent_id']['options'] = $records;
-        return view('admin.category.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
         
     }
 
@@ -72,7 +81,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -92,7 +101,7 @@ class CategoryController extends Controller
             $category->images()->create(['path'=>$filePath]);
         }
          // Redirect back with a success message
-        return redirect()->route('admin.categories')->with('success', 'Category '.$category->name.' created successfully!');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
         
     }
 
@@ -111,7 +120,7 @@ class CategoryController extends Controller
     {
         $categories = Category::with(['images'])->withCount('products')->get();
         $this->fields['parent_id']['options'] = $categories;
-        return view('admin.category.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$category, 'edit'=>true, 'categories'=>$categories]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$category, 'edit'=>true, 'categories'=>$categories]);
     }
 
     /**
@@ -119,7 +128,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -138,7 +147,7 @@ class CategoryController extends Controller
         if($filePath) {
             $category->images()->create(['path'=>$filePath]);
         }
-        return redirect()->route('admin.categories')->with('success', 'Category updated successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -147,6 +156,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect()->route('admin.categories')->with('success', 'Category deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

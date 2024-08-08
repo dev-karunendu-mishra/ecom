@@ -63,7 +63,6 @@ class BlogCategoryController extends Controller
         $records = BlogCategory::with(['parent','children','images'])->get();
         $this->fields['parent_id']['options'] = $records;
         return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
-
     }
 
     /**
@@ -79,7 +78,7 @@ class BlogCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'url'=>'required' // max 2MB
@@ -126,7 +125,27 @@ class BlogCategoryController extends Controller
      */
     public function update(Request $request, BlogCategory $blogCategory)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'url'=>'required' // max 2MB
+        ]);
+
+        $blogCategory->update($request->all());
+        // Handle file upload
+        $filePath=null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/blogCategories', $fileName); // 'uploads' is the storage folder
+        }
+        
+        if($filePath) {
+            $blogCategory->images()->create(['path'=>$filePath]);
+        }
+
+        // Redirect back with a success message
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**

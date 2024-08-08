@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 
 class SubscriberController extends Controller
 {
-    public $columns = ["id"=>"ID", "name"=>"Name", "email"=>"Email"];
 
-    public $fields = [
+    private $indexView = 'admin.subscriber.all';
+    private $storeRoute = 'admin.subscribers';
+    private $editView = 'admin.subscriber.edit';
+    private $deleteRoute = 'admin.subscribers';
+    private $deleteMessage = 'Subscriber deleted successfully.';
+    private $createMessage = 'Subscriber created successfully.';
+    private $updateMessage = 'Subscriber updated successfully.';
+
+    private $columns = ["id"=>"ID", "name"=>"Name", "email"=>"Email"];
+
+    private $fields = [
         [
             "id"=>"name",
             "name"=>"name",
@@ -32,7 +41,7 @@ class SubscriberController extends Controller
     public function index()
     {
         $records = Subscriber::all();
-        return view('admin.subscriber.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -48,13 +57,13 @@ class SubscriberController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
         ]);
 
         Subscriber::create($request->all());
-        return redirect()->route('admin.subscribers')->with('success', 'Subscriber added successfully!');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -70,7 +79,7 @@ class SubscriberController extends Controller
      */
     public function edit(Subscriber $subscriber)
     {
-        return view('admin.subscriber.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$subscriber, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$subscriber, 'edit'=>true]);
     }
 
     /**
@@ -78,7 +87,12 @@ class SubscriberController extends Controller
      */
     public function update(Request $request, Subscriber $subscriber)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required',
+        ]);
+        $subscriber->update($request->all());
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -87,6 +101,6 @@ class SubscriberController extends Controller
     public function destroy(Subscriber $subscriber)
     {
         $subscriber->delete();
-        return redirect()->route('admin.subscribers')->with('success', 'Subscriber deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

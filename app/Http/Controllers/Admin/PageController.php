@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    private $indexView = 'admin.pages.all';
+    private $storeRoute = 'admin.pages';
+    private $editView = 'admin.pages.edit';
+    private $deleteRoute = 'admin.pages';
+    private $deleteMessage = 'Page deleted successfully.';
+    private $createMessage = 'Page created successfully.';
+    private $updateMessage = 'Page updated successfully.';
+    
     public $columns = ["id"=>"ID", "title"=>"Page Title", "description"=>"Description", "url"=>"Page URL", "created_at"=>"Created At"];
 
     public $fields = [
@@ -39,7 +47,7 @@ class PageController extends Controller
     public function index()
     {
         $records = Page::all();
-        return view('admin.pages.all-pages',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -55,23 +63,13 @@ class PageController extends Controller
      */
     public function store(Request $request)
     {
-
-        $validatedData = $request->validate([
+        $request->validate([
             'title'=>'required',
             'description'=>'required',
-            'url'=>'required',
-            // 'image'=>'required|mimes:png,jpg,jpeg,gif'
+            'url'=>'required'
         ]);
-            
-            // // Handle file upload
-            // if ($request->hasFile('image')) {
-            //     $file = $request->file('image');
-            //     $fileName = time() . '_' . $file->getClientOriginalName();
-            //     $filePath = $file->storeAs('uploads', $fileName); // 'uploads' is the storage folder
-            // }
-
         Page::create($request->all());
-        return redirect()->route('admin.pages')->with('success', 'Page added successfully!');
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -87,7 +85,7 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        return view('admin.pages.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$page, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$page, 'edit'=>true]);
     }
 
     /**
@@ -95,23 +93,14 @@ class PageController extends Controller
      */
     public function update(Request $request, Page $page)
     {
-         $validatedData = $request->validate([
+        $request->validate([
             'title'=>'required',
             'description'=>'required',
             'url'=>'required',
             'image'=>'nullable|mimes:png,jpg,jpeg,gif'
         ]);
-            
-            // // Handle file upload
-            // if ($request->hasFile('image')) {
-            //     $file = $request->file('image');
-            //     $fileName = time() . '_' . $file->getClientOriginalName();
-            //     $filePath = $file->storeAs('uploads', $fileName); // 'uploads' is the storage folder
-            // }
-
-        //$page = Page::create(['title'=>$request->title, 'description'=>$request->description, 'url'=>$request->url]);
         $page->update($request->all());
-        return redirect()->route('admin.pages')->with('success', 'Page updated successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -121,6 +110,6 @@ class PageController extends Controller
     {
          $page->delete();
         // Redirect to the items index page with a success message
-        return redirect()->route('admin.pages')->with('success', 'Page deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

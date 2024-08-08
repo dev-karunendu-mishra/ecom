@@ -8,14 +8,23 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+
+    private $indexView = 'admin.settings.all';
+    private $storeRoute = 'admin.settings';
+    private $createView = 'admin.settings.create';
+    private $editView = 'admin.settings.edit';
+    private $deleteRoute = 'admin.settings';
+    private $deleteMessage = 'Setting deleted successfully.';
+    private $createMessage = 'Setting created successfully.';
+    private $updateMessage = 'Setting updated successfully.';
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //  $pages = Page::all();
         $settings = Setting::first();
-        return view('admin.settings.create',['settings'=>$settings,'edit'=>false]);
+        return view($this->createView,['settings'=>$settings,'edit'=>false]);
     }
 
     /**
@@ -31,7 +40,7 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'title'=>'required',
             'description'=>'required',
             'domain'=>'required',
@@ -55,8 +64,8 @@ class SettingController extends Controller
             $icon = $file->storeAs('uploads/logo', $fileName); // 'uploads' is the storage folder
         }
 
-        $setting = Setting::create(['title'=>$request->title, 'description'=>$request->description, 'domain'=>$request->domain, 'address'=>$request->address,'mobile'=>$request->mobile, 'email'=>$request->email, 'logo'=>$logo, 'icon'=>$icon, 'facebook'=>$request->facebook,'twitter'=>$request->twitter,'linkedin'=>$request->linkedin,'instagram'=>$request->instagram,'youtube'=>$request->youtube]);
-        return redirect()->route('admin.settings')->with('success', 'Website settings added successfully!');
+        Setting::create(['title'=>$request->title, 'description'=>$request->description, 'domain'=>$request->domain, 'address'=>$request->address,'mobile'=>$request->mobile, 'email'=>$request->email, 'logo'=>$logo, 'icon'=>$icon, 'facebook'=>$request->facebook,'twitter'=>$request->twitter,'linkedin'=>$request->linkedin,'instagram'=>$request->instagram,'youtube'=>$request->youtube]);
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -128,7 +137,7 @@ class SettingController extends Controller
 
 
         $setting->update($newSetting);
-        return redirect()->route('admin.settings')->with('success', 'Settings updated successfully.');
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -136,6 +145,7 @@ class SettingController extends Controller
      */
     public function destroy(Setting $setting)
     {
-        //
+        $setting->delete();
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }

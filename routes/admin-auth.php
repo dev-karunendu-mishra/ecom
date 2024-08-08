@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\SubscriberController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\IndustryController;
+use App\Http\Controllers\Admin\PackageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest:admin')->prefix('admin')->name('admin.')->group(function () {
@@ -193,10 +194,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
             'update' => 'catalogs.update',
             'destroy' => 'catalogs.destroy'
         ]);
-        // Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
-        // Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
-
-         Route::resource('services', ServiceController::class)->names([
+       
+        Route::resource('services', ServiceController::class)->names([
             'index' => 'services',
             'create' => 'services.create',
             'store' => 'services.store',
@@ -205,6 +204,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
             'update' => 'services.update',
             'destroy' => 'services.destroy'
         ]);
+
         Route::resource('industries', IndustryController::class)->names([
             'index' => 'industries',
             'create' => 'industries.create',
@@ -213,6 +213,16 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
             'edit' => 'industries.edit',
             'update' => 'industries.update',
             'destroy' => 'industries.destroy'
+        ]);
+
+        Route::resource('packages', PackageController::class)->names([
+            'index' => 'packages',
+            'create' => 'packages.create',
+            'store' => 'packages.store',
+            'show' => 'packages.show',
+            'edit' => 'packages.edit',
+            'update' => 'packages.update',
+            'destroy' => 'packages.destroy'
         ]);
     });
     

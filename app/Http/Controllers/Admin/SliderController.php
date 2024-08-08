@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 
 class SliderController extends Controller
 {
+
+    private $indexView = 'admin.sliders.all';
+    private $storeRoute = 'admin.sliders';
+    private $editView = 'admin.sliders.edit';
+    private $deleteRoute = 'admin.sliders';
+    private $deleteMessage = 'Slider deleted successfully.';
+    private $createMessage = 'Slider created successfully.';
+    private $updateMessage = 'Slider updated successfully.';
+
     public $columns = ["id"=>"ID", "title"=>"Title", "sub_title"=>"SubTitle", "image"=>"Slider Image", "created_at"=>"Created At"];
 
     public $fields = [
@@ -46,7 +55,7 @@ class SliderController extends Controller
     public function index()
     {
         $records = Slider::all();
-        return view('admin.sliders.all',['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
+        return view($this->indexView,['columns'=>$this->columns,'fields'=>$this->fields,'edit'=>false,'records'=>$records,'model'=>null]);
     }
 
     /**
@@ -62,23 +71,23 @@ class SliderController extends Controller
      */
     public function store(Request $request)
     {
-             $validatedData = $request->validate([
-             'title'=>'required',
-                'sub_title'=>'required',
-                //'shop_link'=>'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
+        $request->validate([
+            'title'=>'required',
+            'sub_title'=>'required',
+            'shop_link'=>'nullable',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-            // Handle file upload
-            $filePath=null;
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('uploads', $fileName); // 'uploads' is the storage folder
-            }
+        // Handle file upload
+        $filePath=null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/sliders', $fileName);
+        }
 
-            $slider = Slider::create(['title'=>$request->title, 'sub_title'=>$request->sub_title, 'shop_link'=>$request->shop_link, 'image'=>$filePath]);
-             return redirect()->route('admin.sliders')->with('success', 'Slider added successfully!');
+        Slider::create(['title'=>$request->title, 'sub_title'=>$request->sub_title, 'shop_link'=>$request->shop_link, 'image'=>$filePath]);
+        return redirect()->route($this->storeRoute)->with('success', $this->createMessage);
     }
 
     /**
@@ -94,7 +103,7 @@ class SliderController extends Controller
      */
     public function edit(Slider $slider)
     {
-        return view('admin.sliders.edit',['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$slider, 'edit'=>true]);
+        return view($this->editView,['columns'=>$this->columns,'fields'=>$this->fields, 'model'=>$slider, 'edit'=>true]);
     }
 
     /**
@@ -102,7 +111,23 @@ class SliderController extends Controller
      */
     public function update(Request $request, Slider $slider)
     {
-        //
+        $request->validate([
+            'title'=>'required',
+            'sub_title'=>'required',
+            'shop_link'=>'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Handle file upload
+        $filePath=null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/sliders', $fileName);
+        }
+
+        $slider->create(['title'=>$request->title, 'sub_title'=>$request->sub_title, 'shop_link'=>$request->shop_link, 'image'=>$filePath]);
+        return redirect()->route($this->storeRoute)->with('success', $this->updateMessage);
     }
 
     /**
@@ -111,6 +136,6 @@ class SliderController extends Controller
     public function destroy(Slider $slider)
     {
         $slider->delete();
-        return redirect()->route('admin.sliders')->with('success', 'Slider deleted successfully.');
+        return redirect()->route($this->deleteRoute)->with('success', $this->deleteMessage);
     }
 }
